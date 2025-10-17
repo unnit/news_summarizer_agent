@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Summarizer Agent</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-newspaper"></i>
+                    <h1>News Summarizer</h1>
+                </div>
+                <p class="subtitle">Get your daily news summary as audio delivered to your phone</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="form-container">
+                <form id="newsForm" class="news-form">
+                    <div class="form-group">
+                        <label for="mobile_number" class="form-label">
+                            <i class="fab fa-telegram"></i>
+                            Telegram Chat ID
+                        </label>
+                        <input 
+                            type="text" 
+                            id="mobile_number" 
+                            name="mobile_number" 
+                            class="form-input" 
+                            placeholder="Your Telegram Chat ID"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="category" class="form-label">
+                                <i class="fas fa-list"></i>
+                                News Category
+                            </label>
+                            <select id="category" name="category" class="form-select">
+                                <option value="general">General</option>
+                                <option value="business">Business</option>
+                                <option value="technology">Technology</option>
+                                <option value="health">Health</option>
+                                <option value="science">Science</option>
+                                <option value="sports">Sports</option>
+                                <option value="entertainment">Entertainment</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country" class="form-label">
+                                <i class="fas fa-globe"></i>
+                                Country
+                            </label>
+                            <select id="country" name="country" class="form-select">
+                                <option value="us">United States</option>
+                                <option value="gb">United Kingdom</option>
+                                <option value="ca">Canada</option>
+                                <option value="au">Australia</option>
+                                <option value="in">India</option>
+                                <option value="de">Germany</option>
+                                <option value="fr">France</option>
+                                <option value="jp">Japan</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="voice" class="form-label">
+                            <i class="fas fa-microphone"></i>
+                            Voice
+                        </label>
+                        <select id="voice" name="voice" class="form-select">
+                            <option value="Joanna">Joanna (Professional Female)</option>
+                            <option value="Matthew">Matthew (Conversational Male)</option>
+                            <option value="Salli">Salli (Friendly Female)</option>
+                            <option value="Kimberly">Kimberly (Authoritative Female)</option>
+                            <option value="Joey">Joey (Natural Male)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <i class="fas fa-play"></i>
+                        <span>Generate News Summary</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state hidden">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <div class="loading-content">
+                    <h3>Generating your news summary...</h3>
+                    <p>This may take a few moments. We're fetching the latest news, creating a summary, and converting it to audio.</p>
+                    
+                    <!-- Progress Bar -->
+                    <div class="progress-container">
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">0% - Starting...</div>
+                    </div>
+                    
+                    <div class="loading-steps">
+                        <div class="step active" data-step="1">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Fetching news</span>
+                        </div>
+                        <div class="step" data-step="2">
+                            <i class="fas fa-brain"></i>
+                            <span>Creating summary</span>
+                        </div>
+                        <div class="step" data-step="3">
+                            <i class="fas fa-microphone"></i>
+                            <span>Generating audio</span>
+                        </div>
+                        <div class="step" data-step="4">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Sending message</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results State -->
+            <div id="resultsState" class="results-state hidden">
+                <div class="results-content">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>News Summary Ready!</h3>
+                    <p>Your personalized news summary has been generated and sent to your phone.</p>
+                    
+                    <div class="results-details">
+                        <div class="detail-item">
+                            <i class="fas fa-newspaper"></i>
+                            <span id="articlesCount">-</span> articles processed
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-microphone"></i>
+                            <span id="audioStatus">Audio generated</span>
+                        </div>
+                        <div class="detail-item" id="telegramStatus">
+                            <i class="fab fa-telegram"></i>
+                            <span id="telegramMessage">-</span>
+                        </div>
+                        <div class="detail-item" id="whatsappStatus">
+                            <i class="fas fa-whatsapp"></i>
+                            <span id="whatsappMessage">-</span>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <a href="#" id="downloadBtn" class="download-btn">
+                            <i class="fas fa-download"></i>
+                            Download Audio
+                        </a>
+                        <button onclick="resetForm()" class="reset-btn">
+                            <i class="fas fa-redo"></i>
+                            Generate Another
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="error-state hidden">
+                <div class="error-content">
+                    <div class="error-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Oops! Something went wrong</h3>
+                    <p id="errorMessage">An error occurred while generating your news summary.</p>
+                    <button onclick="resetForm()" class="retry-btn">
+                        <i class="fas fa-redo"></i>
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 News Summarizer Agent. Powered by AI.</p>
+                <div class="footer-links">
+                    <a href="/status" target="_blank">System Status</a>
+                    <a href="#" onclick="showAbout()">About</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>About News Summarizer Agent</h3>
+                <button onclick="hideAbout()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>This application uses AI to fetch the latest news, create engaging podcast-style summaries, and deliver them as audio to your phone via WhatsApp.</p>
+                <div class="features-list">
+                    <div class="feature">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Latest news from multiple sources</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-brain"></i>
+                        <span>AI-powered summarization</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-microphone"></i>
+                        <span>Natural-sounding audio</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-whatsapp"></i>
+                        <span>WhatsApp delivery</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
