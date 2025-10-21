@@ -66,7 +66,6 @@ class NewsFetcher:
                     articles.append(article)
             
             return articles
-            print(articles)
             
         except requests.RequestException as e:
             print(f"Error fetching from NewsAPI: {e}")
@@ -99,13 +98,13 @@ class NewsFetcher:
             print(f"Error fetching from RSS feed: {e}")
             return []
     
-    def fetch_top_headlines(self, sources: Optional[List[str]] = None) -> List[NewsArticle]:
+    def fetch_top_headlines(self, sources: Optional[List[str]] = None, category: str = 'general', country: str = 'us') -> List[NewsArticle]:
         """Fetch top headlines from multiple sources."""
         all_articles = []
         
         # Fetch from NewsAPI
         try:
-            newsapi_articles = self.fetch_from_newsapi()
+            newsapi_articles = self.fetch_from_newsapi(category, country)
             all_articles.extend(newsapi_articles)
         except Exception as e:
             print(f"Failed to fetch from NewsAPI: {e}")

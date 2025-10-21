@@ -291,16 +291,14 @@ body {
 
 .results-details {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
     margin-bottom: 30px;
 }
 
 .detail-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 15px;
+    gap: 5px;
+    padding: 10px;
     background: #f7fafc;
     border-radius: 12px;
     color: #4a5568;

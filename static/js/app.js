@@ -250,23 +250,10 @@ class NewsSummarizerApp {
         const telegramStatus = document.getElementById('telegramStatus');
         const telegramMessage = document.getElementById('telegramMessage');
         telegramMessage.textContent = result.telegram_message || 'Not configured';
-        
         if (result.telegram_sent) {
-            telegramStatus.style.color = '#48bb78';
             telegramMessage.textContent = result.telegram_message + (result.telegram_audio_sent ? ' (with audio)' : '');
         } else {
             telegramStatus.style.color = '#f56565';
-        }
-        
-        // Update WhatsApp status (fallback)
-        const whatsappStatus = document.getElementById('whatsappStatus');
-        const whatsappMessage = document.getElementById('whatsappMessage');
-        whatsappMessage.textContent = result.whatsapp_message || 'Not configured';
-        
-        if (result.whatsapp_sent) {
-            whatsappStatus.style.color = '#48bb78';
-        } else {
-            whatsappStatus.style.color = '#f56565';
         }
         
         // Set up download button

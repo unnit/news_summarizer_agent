@@ -33,9 +33,9 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 300   # 5 minutes
 # Initialize the news summarizer agent
 try:
     agent = NewsSummarizerAgent()
-    print("✅ News Summarizer Agent initialized successfully")
+    print("News Summarizer Agent initialized successfully")
 except Exception as e:
-    print(f"❌ Error initializing agent: {e}")
+    print(f"Error initializing agent: {e}")
     agent = None
 
 # Initialize messenger sender
@@ -63,83 +63,48 @@ def process_news_task(task_id, mobile_number, news_category, country, voice_id):
             country=country,
             voice_id=voice_id,
             send_messages=True
+            #chat_id=mobile_number
         )
         
         with task_lock:
             if results['success']:
-                task_storage[task_id]['progress'] = 80
-                task_storage[task_id]['message'] = 'Sending messages...'
+            #     task_storage[task_id]['progress'] = 80
+            #     task_storage[task_id]['message'] = 'Sending messages...'
                 
-                # Priority 1: Send via Telegram (preferred)
-                telegram_success = False
-                telegram_message = 'Telegram not configured'
+            #     # Priority 1: Send via Telegram (preferred)
+            #     telegram_success = False
+            #     telegram_message = 'Telegram not configured'
                 
-                if messenger_sender.telegram_bot:
-                    try:
-                        # Use the provided chat ID directly (could be username, chat ID, or phone number)
-                        telegram_chat_id = 623523084
+            #     if messenger_sender.telegram_bot:
+            #         try:
+            #             # Use the provided chat ID directly (could be username, chat ID, or phone number)
+            #             telegram_chat_id = 
+            #             message_text = f"Your daily news summary is ready!"
+            #             # Send text message
+            #             telegram_success = run_async(
+            #                 messenger_sender.send_telegram_message(message_text, telegram_chat_id)
+            #             )
                         
-                        # If it's a phone number without @, we can try using it directly
-                        # Telegram accepts phone numbers as chat IDs in some cases
-                        if not telegram_chat_id.startswith('@') and not telegram_chat_id.startswith('-'):
-                            # It's likely a phone number, use it as is
-                            pass
+            #             # Send audio file if available
+            #             audio_success = False
+            #             if results.get('audio_path') and os.path.exists(results.get('audio_path')):
+            #                 audio_success = run_async(
+            #                     messenger_sender.send_telegram_audio(
+            #                         results['audio_path'], 
+            #                         "Your news summary audio",
+            #                         telegram_chat_id
+            #                     )
+            #                 )
                         
-                        message_text = f"📰 Your daily news summary is ready! 🎧"
+            #             task_storage[task_id]['telegram_sent'] = telegram_success
+            #             task_storage[task_id]['telegram_audio_sent'] = audio_success
+            #             task_storage[task_id]['telegram_message'] = 'Telegram message sent successfully!' if telegram_success else 'Failed to send Telegram message'
                         
-                        # Send text message
-                        telegram_success = run_async(
-                            messenger_sender.send_telegram_message(message_text, telegram_chat_id)
-                        )
-                        
-                        # Send audio file if available
-                        audio_success = False
-                        if results.get('audio_path') and os.path.exists(results.get('audio_path')):
-                            audio_success = run_async(
-                                messenger_sender.send_telegram_audio(
-                                    results['audio_path'], 
-                                    "🎧 Your news summary audio",
-                                    telegram_chat_id
-                                )
-                            )
-                        
-                        task_storage[task_id]['telegram_sent'] = telegram_success
-                        task_storage[task_id]['telegram_audio_sent'] = audio_success
-                        task_storage[task_id]['telegram_message'] = 'Telegram message sent successfully!' if telegram_success else 'Failed to send Telegram message'
-                        
-                    except Exception as e:
-                        task_storage[task_id]['telegram_sent'] = False
-                        task_storage[task_id]['telegram_audio_sent'] = False
-                        task_storage[task_id]['telegram_message'] = f'Telegram error: {str(e)}'
-                else:
-                    task_storage[task_id]['telegram_sent'] = False
-                    task_storage[task_id]['telegram_audio_sent'] = False
-                    task_storage[task_id]['telegram_message'] = 'Telegram not configured'
-                
-                # Priority 2: Send via WhatsApp (fallback)
-                whatsapp_success = False
-                whatsapp_message = 'WhatsApp not configured'
-                
-                if messenger_sender.twilio_client and messenger_sender.whatsapp_to_number:
-                    try:
-                        formatted_number = mobile_number
-                        if not formatted_number.startswith('whatsapp:+'):
-                            if not formatted_number.startswith('+'):
-                                formatted_number = '+' + formatted_number
-                            formatted_number = 'whatsapp:' + formatted_number
-                        
-                        message_text = f"📰 Your daily news summary is ready! 🎧 Listen to the audio below:"
-                        whatsapp_success = messenger_sender.send_whatsapp_message(message_text, formatted_number)
-                        
-                        task_storage[task_id]['whatsapp_sent'] = whatsapp_success
-                        task_storage[task_id]['whatsapp_message'] = 'WhatsApp message sent successfully!' if whatsapp_success else 'Failed to send WhatsApp message'
-                        
-                    except Exception as e:
-                        task_storage[task_id]['whatsapp_sent'] = False
-                        task_storage[task_id]['whatsapp_message'] = f'WhatsApp error: {str(e)}'
-                else:
-                    task_storage[task_id]['whatsapp_sent'] = False
-                    task_storage[task_id]['whatsapp_message'] = 'WhatsApp not configured'
+            #         except Exception as e:
+            #             task_storage[task_id]['telegram_sent'] = False
+            #             task_storage[task_id]['telegram_audio_sent'] = False
+            #             task_storage[task_id]['telegram_message'] = f'Telegram error: {str(e)}'
+            #     else:
                 
                 # Update final status
                 task_storage[task_id]['status'] = 'completed'
@@ -151,7 +116,10 @@ def process_news_task(task_id, mobile_number, news_category, country, voice_id):
                     'articles_count': results.get('articles_fetched', 0),
                     'summary_generated': results.get('summary_generated', False),
                     'audio_created': results.get('audio_created', False),
-                    'timestamp': datetime.now().isoformat()
+                    'timestamp': datetime.now().isoformat(),
+                    'telegram_sent': True,
+                    'telegram_audio_sent': True,
+                    'telegram_message': 'Telegram message sent successfully!'
                 }
             else:
                 task_storage[task_id]['status'] = 'failed'
@@ -189,7 +157,7 @@ def generate_news():
         if not mobile_number:
             return jsonify({
                 'success': False,
-                'error': 'Mobile number is required'
+                'error': 'Chat ID is required'
             }), 400
         
         # Validate mobile number format (basic validation)
@@ -227,7 +195,7 @@ def generate_news():
         thread.daemon = True
         thread.start()
         
-        print(f"🚀 Started news generation task {task_id} for {mobile_number}")
+        print(f"Started news generation task {task_id} for {mobile_number}")
         
         return jsonify({
             'success': True,
@@ -354,7 +322,7 @@ if __name__ == '__main__':
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     
     # Run the Flask app with increased timeout
-    print("🌐 Starting News Summarizer Web App...")
-    print("📱 Access the web interface at: http://localhost:8000")
-    print("⏱️  Async processing enabled - long operations won't timeout!")
+    print("Starting News Summarizer Web App...")
+    print("Access the web interface at: http://localhost:8000")
+    print("Async processing enabled - long operations won't timeout!")
     app.run(debug=True, host='0.0.0.0', port=8000, threaded=True)

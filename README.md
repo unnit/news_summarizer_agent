@@ -4,12 +4,11 @@ An AI-powered news summarization agent that fetches the latest news, creates pod
 
 ## Features
 
-🔍 **News Fetching**: Retrieves top headlines from NewsAPI and RSS feeds  
-🤖 **AI Summarization**: Uses Google Gemini or OpenAI GPT to create engaging podcast-style summaries  
-🎤 **Text-to-Speech**: Converts summaries to natural-sounding audio using Amazon Polly  
-📱 **Multi-Platform Delivery**: Sends summaries via Telegram and WhatsApp  
-🌐 **Web Interface**: Beautiful, responsive web UI for easy access  
-⚡ **Fully Automated**: Complete workflow from news fetching to message delivery  
+**News Fetching**: Retrieves top headlines from NewsAPI and RSS feeds  
+**AI Summarization**: Uses Google Gemini or OpenAI GPT to create engaging podcast-style summaries  
+**Text-to-Speech**: Converts summaries to natural-sounding audio using Amazon Polly  
+**Multi-Platform Delivery**: Sends summaries via Telegram and WhatsApp   
+**Fully Automated**: Complete workflow from news fetching to message delivery  
 
 ## Architecture
 
@@ -20,18 +19,6 @@ The agent consists of four main tools:
 3. **TTS Converter**: Converts text to speech using Amazon Polly
 4. **Messenger Sender**: Delivers messages via Telegram and WhatsApp
 
-## Web Interface Features
-
-The web interface provides a modern, user-friendly experience:
-
-- 📱 **Mobile-Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
-- 🎨 **Beautiful UI**: Clean, modern interface with smooth animations
-- 📞 **Phone Number Input**: Smart formatting with country code validation
-- 🎛️ **Customizable Options**: Choose news category, country, and voice preferences
-- ⏳ **Real-time Progress**: Visual progress indicators during processing
-- 🎧 **Audio Download**: Direct download links for generated audio files
-- 📊 **Status Updates**: Real-time feedback on WhatsApp delivery status
-- 🔄 **Easy Reset**: One-click to generate another summary
 
 ## Prerequisites
 
@@ -164,11 +151,11 @@ The easiest way to use the News Summarizer Agent is through the web interface:
 5. **Click "Generate News Summary"** and wait for the magic to happen!
 
 The web interface will:
-- ✅ Fetch the latest news
-- 🤖 Create an AI-powered summary
-- 🎤 Generate natural-sounding audio
-- 📱 Send the audio to your WhatsApp (if configured)
-- 📥 Provide a download link for the audio file
+- Fetch the latest news
+- Create an AI-powered summary
+- Generate natural-sounding audio
+- Send the audio to your WhatsApp (if configured)
+- Provide a download link for the audio file
 
 ### Command Line Interface
 
@@ -281,64 +268,6 @@ Modify the prompt in `tools/news_summarizer.py` to change the summary style or l
 ### Adding New Messaging Platforms
 Extend `tools/messenger_sender.py` to add support for additional platforms.
 
-## Troubleshooting
-
-### Common Issues
-
-1. **"Missing required environment variables"**
-   - Ensure all required API keys are set in your `.env` file
-   - Check that the `.env` file is in the project root directory
-
-2. **"No news articles were fetched"**
-   - Verify your NewsAPI key is valid
-   - Check your internet connection
-   - Ensure NewsAPI quota hasn't been exceeded
-
-3. **"Error generating summary"**
-   - For Gemini: Verify your Google Gemini API key is valid and has proper permissions
-   - For OpenAI: Verify your OpenAI API key is valid and has sufficient credits
-   - Check that the AI_MODEL_PROVIDER is set correctly in your `.env` file
-
-4. **"Audio creation failed"**
-   - Verify your AWS credentials are correct
-   - Check that Amazon Polly is available in your AWS region
-   - Ensure your AWS account has Polly permissions
-
-5. **"Telegram/WhatsApp messages failed"**
-   - Verify bot tokens and chat IDs are correct
-   - Check that bots are properly configured
-   - Ensure destination numbers are in correct format
-
-### Debug Mode
-
-For detailed logging, you can modify the code to add more print statements or use Python's logging module.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For issues and questions:
-1. Check the troubleshooting section
-2. Review the configuration setup
-3. Open an issue on GitHub
-
-## Roadmap
-
-- [ ] Support for additional news sources
-- [ ] Multiple language support
-- [ ] Custom summary templates
-- [ ] Scheduled execution
-- [ ] Web dashboard
-- [ ] Email delivery option
-- [ ] Voice customization options
-- [ ] Batch processing capabilities

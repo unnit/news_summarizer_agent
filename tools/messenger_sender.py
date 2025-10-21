@@ -198,7 +198,7 @@ class MessengerSender:
         if audio_path and self.telegram_bot_token and self.telegram_chat_id:
             results['telegram_audio'] = await self.send_telegram_audio(
                 audio_path, 
-                caption="📰 Your daily news summary"
+                caption="Your daily news summary"
             )
         
         # Send text summary via WhatsApp

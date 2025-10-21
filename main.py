@@ -32,10 +32,10 @@ class NewsSummarizerAgent:
             self.tts_converter = TTSConverter()
             self.messenger_sender = MessengerSender()
             
-            print("✅ News Summarizer Agent initialized successfully")
+            print("News Summarizer Agent initialized successfully")
             
         except Exception as e:
-            print(f"❌ Error initializing agent: {e}")
+            print(f"Error initializing agent: {e}")
             sys.exit(1)
     
     def run_complete_workflow(
@@ -69,12 +69,14 @@ class NewsSummarizerAgent:
         }
         
         try:
-            print("🚀 Starting News Summarizer Agent workflow...")
+            print("Starting News Summarizer Agent workflow...")
             
             # Step 1: Fetch news articles
-            print("📰 Fetching news articles...")
+            print("Fetching news articles...")
             articles = self.news_fetcher.fetch_top_headlines(
-                sources=rss_feeds or POPULAR_RSS_FEEDS[:2]  # Use first 2 RSS feeds if none specified
+                sources=None,#rss_feeds or POPULAR_RSS_FEEDS[:2],  # Use first 2 RSS feeds if none specified
+                category=news_category,
+                country=country
             )
             
             if not articles:
@@ -82,10 +84,10 @@ class NewsSummarizerAgent:
                 return results
             
             results['articles_fetched'] = len(articles)
-            print(f"✅ Fetched {len(articles)} news articles")
+            print(f"Fetched {len(articles)} news articles")
             
             # Step 2: Generate summary
-            print("🤖 Generating podcast-style summary...")
+            print("Generating podcast-style summary...")
             summary = self.news_summarizer.create_podcast_summary(articles)
             
             if not summary or summary == "No news articles available for summarization.":
@@ -93,24 +95,23 @@ class NewsSummarizerAgent:
                 return results
             
             results['summary_generated'] = True
-            print("✅ Summary generated successfully")
-            print(f"📝 Summary length: {len(summary)} characters")
+            print("Summary generated successfully")
+            print(f"Summary length: {len(summary)} characters")
             
             # Step 3: Convert to speech
-            print("🎤 Converting summary to speech...")
+            print("Converting summary to speech...")
             try:
                 audio_path = self.tts_converter.create_podcast_audio(summary, voice_id)
                 results['audio_created'] = True
                 results['audio_path'] = audio_path
-                print(f"✅ Audio created: {audio_path}")
+                print(f"Audio created: {audio_path}")
                 
             except Exception as e:
-                print(f"⚠️ Audio creation failed: {e}")
+                print(f"Audio creation failed: {e}")
                 results['errors'].append(f"Audio creation failed: {e}")
             
             # Step 4: Send messages (if requested)
             if send_messages:
-                print("📱 Sending messages...")
                 try:
                     message_results = run_async(
                         self.messenger_sender.send_news_summary(summary, results.get('audio_path'))
@@ -119,20 +120,20 @@ class NewsSummarizerAgent:
                     
                     # Print results
                     for platform, success in message_results.items():
-                        status = "✅" if success else "❌"
+                        status = "Success" if success else "Failure"
                         print(f"{status} {platform}: {'Sent' if success else 'Failed'}")
                         
                 except Exception as e:
-                    print(f"⚠️ Message sending failed: {e}")
+                    print(f"Message sending failed: {e}")
                     results['errors'].append(f"Message sending failed: {e}")
             else:
-                print("📱 Message sending skipped")
+                print("Message sending skipped")
             
             results['success'] = True
-            print("🎉 Workflow completed successfully!")
+            print("Workflow completed successfully!")
             
         except Exception as e:
-            print(f"❌ Workflow failed: {e}")
+            print(f" Workflow failed: {e}")
             results['errors'].append(str(e))
         
         return results
@@ -147,7 +148,7 @@ class NewsSummarizerAgent:
         }
         
         try:
-            print("🚀 Starting text-only workflow...")
+            print("Starting text-only workflow...")
             
             # Fetch news
             articles = self.news_fetcher.fetch_top_headlines()
@@ -156,7 +157,7 @@ class NewsSummarizerAgent:
                 return results
             
             results['articles_fetched'] = len(articles)
-            print(f"✅ Fetched {len(articles)} news articles")
+            print(f"Fetched {len(articles)} news articles")
             
             # Generate summary
             summary = self.news_summarizer.create_podcast_summary(articles)
@@ -166,10 +167,10 @@ class NewsSummarizerAgent:
             
             results['summary'] = summary
             results['success'] = True
-            print("✅ Text summary generated successfully")
+            print("Text summary generated successfully")
             
         except Exception as e:
-            print(f"❌ Text workflow failed: {e}")
+            print(f" Text workflow failed: {e}")
             results['errors'].append(str(e))
         
         return results
@@ -208,7 +209,7 @@ def main():
     # Show status if requested
     if args.status:
         status = agent.get_status()
-        print("📊 Agent Status:")
+        print("Agent Status:")
         print(f"  Available platforms: {', '.join(status['available_platforms']) or 'None'}")
         print(f"  Polly voices available: {status['polly_voices']}")
         print(f"  Timestamp: {status['timestamp']}")
@@ -226,24 +227,24 @@ def main():
         results = agent.run_text_only_workflow(news_category=args.category)
     
     # Print final results
-    print("\n📊 Final Results:")
-    print(f"  Success: {'✅' if results['success'] else '❌'}")
+    print("\nFinal Results:")
+    print(f"  Success: {'' if results['success'] else ''}")
     print(f"  Articles fetched: {results.get('articles_fetched', 0)}")
     
     if results.get('summary_generated'):
-        print("  Summary: ✅ Generated")
+        print("  Summary: Generated")
     if results.get('audio_created'):
-        print(f"  Audio: ✅ Created at {results.get('audio_path', 'Unknown')}")
+        print(f"  Audio: Created at {results.get('audio_path', 'Unknown')}")
     
     if results.get('messages_sent'):
         print("  Messages sent:")
         for platform, success in results['messages_sent'].items():
-            print(f"    {platform}: {'✅' if success else '❌'}")
+            print(f"    {platform}: {'' if success else ''}")
     
     if results.get('errors'):
         print("  Errors:")
         for error in results['errors']:
-            print(f"    ❌ {error}")
+            print(f"     {error}")
     
     # Exit with appropriate code
     sys.exit(0 if results['success'] else 1)

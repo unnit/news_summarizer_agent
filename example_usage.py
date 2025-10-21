@@ -55,7 +55,7 @@ if __name__ == '__main__':
     
     # Check if .env file exists
     if not os.path.exists('.env'):
-        print("⚠️  .env file not found. Please create one with your API keys.")
+        print(".env file not found. Please create one with your API keys.")
         print("See README.md for setup instructions.")
         print("\nRequired for Gemini:")
         print("- GEMINI_API_KEY")
@@ -72,7 +72,7 @@ if __name__ == '__main__':
         example_custom_settings()
         
     except Exception as e:
-        print(f"❌ Error running examples: {e}")
+        print(f"Error running examples: {e}")
         print("Make sure all API keys are configured in your .env file.")
         print("For Gemini: Set GEMINI_API_KEY and AI_MODEL_PROVIDER=gemini")
         print("For OpenAI: Set OPENAI_API_KEY and AI_MODEL_PROVIDER=openai")

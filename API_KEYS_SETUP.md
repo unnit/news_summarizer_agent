@@ -117,5 +117,5 @@ class Config:
 After adding your keys, test the configuration:
 
 ```bash
-python -c "from config import Config; print('✅ Configuration loaded successfully')"
+python -c "from config import Config; print('Configuration loaded successfully')"
 ```

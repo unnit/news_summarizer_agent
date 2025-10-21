@@ -41,7 +41,7 @@ class NewsSummarizer:
         # Initialize the model
         self.model = genai.GenerativeModel('gemini-2.0-flash')
         
-        print("✅ Gemini AI model initialized")
+        print("Gemini AI model initialized")
     
     def _init_openai(self):
         """Initialize OpenAI model."""
@@ -61,7 +61,7 @@ class NewsSummarizer:
             max_tokens=1500
         )
         
-        print("✅ OpenAI model initialized")
+        print("OpenAI model initialized")
     
     def create_podcast_summary(self, articles: List[NewsArticle]) -> str:
         """Create a podcast-style summary from news articles."""
